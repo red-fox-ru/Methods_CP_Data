@@ -1,6 +1,6 @@
 # Les 01
 # Author: Red-F0X (Panin Stanislav)
-# Data create: 01.08.2021
+# Data create: 01.09.2021
 
 
 import json
