@@ -31,13 +31,16 @@ def get_vacancy_sj(url, search, page=0):
     name = [el.get_text() for el in soup.find_all('a', {'class': '_6AfZ9'})]
     zp = [unicodedata.normalize("NFKD", el.get_text(strip=True)) for el in
           soup.find_all('span', {'class': 'f-test-text-company-item-salary'})]
-    company = [el.get_text() for el in soup.find_all('a', {'class': '_205Zx'})]
+    company = [el.get_text('|', strip=True) for el in
+               soup.find_all('div', {'class': '_3_eyK'})]
+    company = [el.split('|')[0] for el in company]
+
     vacancy_return = []
     for num, item in enumerate(name):
         vacancy_return.append({
             'title': item,
             'url': links[num],
-            'zp': zp[num],
+            'pay_day': zp[num],
             'company': company[num]
         })
     return vacancy_return
@@ -71,15 +74,21 @@ def get_vacancy_hh(url, search, page=0):
         vacancy_return.append({
             'title': item,
             'url': links[num],
-            'zp': zp[num],
+            'pay_day': zp[num],
             'company': company[num]
         })
     return vacancy_return
 
 
 if __name__ == '__main__':
-    all_vacancy = []
+    vacancy_hh = []
+    vacancy_sj = []
     for page in range(5):
-        all_vacancy += get_vacancy_sj('https://www.superjob.ru/vacancy/search/', 'python', page)
-        all_vacancy += get_vacancy_hh('https://hh.ru/search/vacancy', 'python', page)
-    pd.DataFrame(all_vacancy).to_csv('vacancy.csv', index=False)
+        vacancy_hh += get_vacancy_hh('https://hh.ru/search/vacancy', 'python', page)
+    print(vacancy_hh)
+    # pd.DataFrame(vacancy_hh).to_csv('vacancy_hh.csv', index=False)
+    #
+    # for page in range(5):
+    #     vacancy_sj += get_vacancy_sj('https://www.superjob.ru/vacancy/search/', 'python', page)
+    # pd.DataFrame(vacancy_hh).to_csv('vacancy_sj.csv', index=False)
+
